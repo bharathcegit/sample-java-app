@@ -1,0 +1,73 @@
+---
+- name: Install Apache Tomcat
+  hosts: tomcat
+  become: true
+  vars:
+    tomcat_version: 9.0.75
+    tomcat_install_dir: /opt/tomcat
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install OpenJDK
+      apt:
+        name: openjdk-11-jdk
+        state: present
+
+    - name: Download Apache Tomcat
+      get_url:
+        url: "https://downloads.apache.org/tomcat/tomcat-{{ tomcat_version.split('.')[0] }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
+        dest: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+        mode: '0644'
+
+    - name: Extract Apache Tomcat
+      unarchive:
+        src: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+        dest: "{{ tomcat_install_dir }}"
+        remote_src: yes
+        mode: '0755'
+        extra_opts: [--strip-components=1]
+
+    - name: Set ownership of Tomcat installation directory
+      file:
+        path: "{{ tomcat_install_dir }}"
+        owner: your_username
+        group: your_group
+        recurse: yes
+
+    - name: Start Apache Tomcat
+      shell: "{{ tomcat_install_dir }}/bin/startup.sh"
+      args:
+        chdir: "{{ tomcat_install_dir }}/bin"
+      async: 0
+      poll: 0
+
+    - name: Deploy Java application
+      become_user: your_username
+      environment:
+        JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
+      command: mvn clean package -f /pom.xml
+      args:
+        chdir: /application
+      register: maven_result
+      changed_when: false
+
+    - name: Copy WAR file to Tomcat webapps
+      copy:
+        src: "/target/application.war"
+        dest: "{{ tomcat_install_/path/to/your/dir }}/webapps/application.war"
+        owner: bharath
+        group: tomcat-group
+        mode: '0644'
+      notify:
+        - Restart Tomcat
+      when: maven_result|success
+
+  handlers:
+    - name: Restart Tomcat
+      shell: "{{ tomcat_install_dir }}/bin/shutdown.sh && sleep 5 && {{ tomcat_install_dir }}/bin/startup.sh"
+      args:
+        chdir: "{{ tomcat_install_dir }}/bin"
+      async: 0/path/to/your/
+      poll: 0

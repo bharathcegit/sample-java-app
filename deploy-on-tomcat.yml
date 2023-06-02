@@ -1,4 +1,3 @@
----
 - name: Install Apache Tomcat
   hosts: tomcat
   become: true
@@ -26,7 +25,6 @@
         name: tomcat-group
         state: present
       become: true
-
 
     - name: Create Tomcat installation directory
       file:
@@ -91,4 +89,3 @@
       args:
         chdir: "{{ tomcat_install_dir }}/bin"
       async: 0
-      poll: 0

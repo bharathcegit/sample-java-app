@@ -21,6 +21,13 @@
         state: present
       become: true
 
+    - name: Create 'tomcat-group' group
+      group:
+        name: tomcat-group
+        state: present
+      become: true
+
+
     - name: Create Tomcat installation directory
       file:
         path: "{{ tomcat_install_dir }}"

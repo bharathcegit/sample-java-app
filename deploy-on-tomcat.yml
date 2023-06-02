@@ -68,7 +68,7 @@
       become_user: bharath
       environment:
         JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
-      command: mvn clean package -f /opt/tomcat/calculator-app/pom.xml
+      command: mvn clean package -f /calculator-app/pom.xml
       args:
         chdir: /opt/tomcat/calculator-app
       register: maven_result

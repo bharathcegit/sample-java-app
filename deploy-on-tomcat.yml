@@ -62,20 +62,39 @@
       async: 0
       poll: 0
 
-    - name: Deploy Java application
-      become_user: bharath
-      environment:
-        JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
-      command: mvn clean package -f /opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app/pom.xml
-      args:
-        chdir: /opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app
-      register: maven_result
-      changed_when: false
 
-    - name: Copy WAR file to Tomcat webapps
+
+    - name: Set JAVA_HOME environment variable
+      lineinfile:
+        dest: /etc/environment
+        line: 'JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64'
+        state: present
+
+
+    - name: Reload environment variables
+      command: source /etc/environment
+      args:
+        executable: /bin/bash
+        creates: /root/.bashrc
+
+    - name: Build Java application with Maven
+      shell: mvn clean package -f /opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app/.
+      args:
+        chdir: /opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app/
+
+
+    - name: Create Tomcat deployment directory
+      file:
+        path: "{{ tomcat_install_dir }}/webapps/calculator-app"
+        state: directory
+        owner: bharath
+        group: tomcat-group
+        mode: '0755'
+
+    - name: Copy WAR file to Tomcat deployment directory
       copy:
-        src: "/opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app/target/calculator-1.0.0.war"
-        dest: "{{ tomcat_install_dir }}/webapps/calculator-1.0.0.war"
+        src: "/opt/java-app/target/java-app.war"
+        dest: "{{ tomcat_install_dir }}/webapps/java-app/java-app.war"
         owner: bharath
         group: tomcat-group
         mode: '0644'

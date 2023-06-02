@@ -15,6 +15,14 @@
         name: openjdk-11-jdk
         state: present
 
+    - name: Create Tomcat installation directory
+      file:
+        path: "{{ tomcat_install_dir }}"
+        state: directory
+        owner: bharath
+        group: tomcat-group
+        mode: '0755'
+
     - name: Download Apache Tomcat
       get_url:
         url: "https://downloads.apache.org/tomcat/tomcat-{{ tomcat_version.split('.')[0] }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"

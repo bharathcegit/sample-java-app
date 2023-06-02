@@ -15,6 +15,12 @@
         name: openjdk-11-jdk
         state: present
 
+    - name: Create 'bharath' user
+      user:
+        name: bharath
+        state: present
+      become: true
+
     - name: Create Tomcat installation directory
       file:
         path: "{{ tomcat_install_dir }}"

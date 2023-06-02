@@ -32,8 +32,8 @@
     - name: Set ownership of Tomcat installation directory
       file:
         path: "{{ tomcat_install_dir }}"
-        owner: your_username
-        group: your_group
+        owner: bharath
+        group: tomcat-group
         recurse: yes
 
     - name: Start Apache Tomcat
@@ -44,7 +44,7 @@
       poll: 0
 
     - name: Deploy Java application
-      become_user: your_username
+      become_user: bharath
       environment:
         JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
       command: mvn clean package -f /opt/tomcat/calculator-app/pom.xml
@@ -57,8 +57,8 @@
       copy:
         src: "/opt/tomcat/calculator-app/target/calculator-1.0.0.war"
         dest: "{{ tomcat_install_dir }}/webapps/calculator-1.0.0.war"
-        owner: your_username
-        group: your_group
+        owner: bharath
+        group: tomcat-group
         mode: '0644'
       notify:
         - Restart Tomcat

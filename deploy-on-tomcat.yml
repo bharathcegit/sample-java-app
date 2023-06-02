@@ -80,7 +80,7 @@
     - name: Build Java application with Maven
       shell: mvn clean package -f /opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app/.
       args:
-        chdir: /opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app/
+        chdir: /opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app
 
 
     - name: Create Tomcat deployment directory
@@ -93,8 +93,8 @@
 
     - name: Copy WAR file to Tomcat deployment directory
       copy:
-        src: "/opt/java-app/target/java-app.war"
-        dest: "{{ tomcat_install_dir }}/webapps/java-app/java-app.war"
+        src: "/opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app/target/calculator-1.0.0.war"
+        dest: "{{ tomcat_install_dir }}/webapps/calculator-1.0.0.war"
         owner: bharath
         group: tomcat-group
         mode: '0644'

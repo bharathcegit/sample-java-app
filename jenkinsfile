@@ -17,7 +17,7 @@ pipeline {
         stage('Create Application Build') 
         {
          steps {
-            sh '''cd calculator-app
+            sh '''cd /opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app
                mvn install clean package'''
          }
       }

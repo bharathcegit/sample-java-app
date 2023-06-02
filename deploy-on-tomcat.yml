@@ -1,109 +1,13 @@
-- name: Install Apache Tomcat
-  hosts: tomcat
-  become: true
-  vars:
-    tomcat_version: 9.0.75
-    tomcat_install_dir: /opt/tomcat
+- hosts: tomcat
+  become: yes
   tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-
-    - name: Install OpenJDK
-      apt:
-        name: openjdk-11-jdk
-        state: present
-
-    - name: Create 'bharath' user
-      user:
-        name: bharath
-        state: present
-      become: true
-
-    - name: Create 'tomcat-group' group
-      group:
-        name: tomcat-group
-        state: present
-      become: true
-
-    - name: Create Tomcat installation directory
-      file:
-        path: "{{ tomcat_install_dir }}"
-        state: directory
-        owner: bharath
-        group: tomcat-group
-        mode: '0755'
-
-    - name: Download Apache Tomcat
-      get_url:
-        url: "https://downloads.apache.org/tomcat/tomcat-{{ tomcat_version.split('.')[0] }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
-        dest: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
-        mode: '0644'
-
-    - name: Extract Apache Tomcat
-      unarchive:
-        src: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
-        dest: "{{ tomcat_install_dir }}"
-        remote_src: yes
-        mode: '0755'
-        extra_opts: [--strip-components=1]
-
-    - name: Set ownership of Tomcat installation directory
-      file:
-        path: "{{ tomcat_install_dir }}"
-        owner: bharath
-        group: tomcat-group
-        recurse: yes
-
-    - name: Start Apache Tomcat
-      shell: "{{ tomcat_install_dir }}/bin/startup.sh"
-      args:
-        chdir: "{{ tomcat_install_dir }}/bin"
-      async: 0
-      poll: 0
-
-
-
-    - name: Set JAVA_HOME environment variable
-      lineinfile:
-        dest: /etc/environment
-        line: 'JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64'
-        state: present
-
-    - name: Reload environment variables
-      command: source /etc/environment
-      args:
-        chdir: /opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app/
-
-
-    - name: Build Java application with Maven
-      shell: mvn clean package -f /opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app/pom.xml
-      args:
-        chdir: /opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app
-
-
-    - name: Create Tomcat deployment directory
-      file:
-        path: "{{ tomcat_install_dir }}/webapps/calculator-app"
-        state: directory
-        owner: bharath
-        group: tomcat-group
-        mode: '0755'
-
-    - name: Copy WAR file to Tomcat deployment directory
+    - name: 'Deploy Java Build in Tomcat server'
       copy:
-        src: "/opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app/target/calculator-1.0.0.war"
-        dest: "{{ tomcat_install_dir }}/webapps/calculator-1.0.0.war"
-        owner: bharath
-        group: tomcat-group
-        mode: '0644'
-      notify:
-        - Restart Tomcat
-      when: maven_result|success
+        dest: '/opt/tomcat10/webapps/webapp.war/'
+        src: '../calculator-app/target/calculator-1.0.0.war'
+        mode: 0755
 
-  handlers:
-    - name: Restart Tomcat
-      shell: "{{ tomcat_install_dir }}/bin/shutdown.sh && sleep 5 && {{ tomcat_install_dir }}/bin/startup.sh"
-      args:
-        chdir: "{{ tomcat_install_dir }}/bin"
-      async: 0
+    - name: 'Restart Tomcat server'
+      service:
+        name: 'tomcat'
+        state: restarted

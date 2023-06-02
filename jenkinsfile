@@ -14,10 +14,19 @@ pipeline {
             }
         }
 
+        stage('Create Application Build') 
+        {
+         steps {
+            sh '''cd calculator-app
+               mvn install clean package'''
+         }
+      }
+
         stage('Run Ansible') 
         {
             steps 
             {
+                sh 'ansible-playbook -i inventory install-tomcat.yml'
                 sh 'ansible-playbook -i inventory deploy-on-tomcat.yml'
             }
         }

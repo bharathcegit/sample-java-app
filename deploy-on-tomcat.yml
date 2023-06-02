@@ -68,15 +68,15 @@
       become_user: bharath
       environment:
         JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
-      command: mvn clean package -f /calculator-app/pom.xml
+      command: mvn clean package -f /opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app/pom.xml
       args:
-        chdir: /opt/tomcat/calculator-app
+        chdir: /opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app
       register: maven_result
       changed_when: false
 
     - name: Copy WAR file to Tomcat webapps
       copy:
-        src: "/opt/tomcat/calculator-app/target/calculator-1.0.0.war"
+        src: "/opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app/target/calculator-1.0.0.war"
         dest: "{{ tomcat_install_dir }}/webapps/calculator-1.0.0.war"
         owner: bharath
         group: tomcat-group

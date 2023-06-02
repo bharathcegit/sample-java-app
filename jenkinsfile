@@ -13,11 +13,7 @@ pipeline {
         }
 
         stage('Run Ansible') {
-            environment {
-                TOMCAT_VERSION = '9.0.75'
-                TOMCAT_INSTALL_DIR = '/opt/tomcat'
-            }
-
+            
             steps {
                 sh 'ansible-playbook -i inventory deploy-on-tomcat.yml'
             }

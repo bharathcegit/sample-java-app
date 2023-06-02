@@ -64,18 +64,6 @@
 
 
 
-    - name: Set JAVA_HOME environment variable
-      lineinfile:
-        dest: /etc/environment
-        line: 'JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64'
-        state: present
-
-    - name: Reload environment variables
-      command: source /etc/environment
-      args:
-        chdir: /opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app/
-
-
     - name: Build Java application with Maven
       shell: mvn clean package -f /opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app/.
       args:

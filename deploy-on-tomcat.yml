@@ -47,18 +47,18 @@
       become_user: your_username
       environment:
         JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
-      command: mvn clean package -f /pom.xml
+      command: mvn clean package -f /opt/tomcat/calculator-app/pom.xml
       args:
-        chdir: /application
+        chdir: /opt/tomcat/calculator-app
       register: maven_result
       changed_when: false
 
     - name: Copy WAR file to Tomcat webapps
       copy:
-        src: "/target/application.war"
-        dest: "{{ tomcat_install_/path/to/your/dir }}/webapps/application.war"
-        owner: bharath
-        group: tomcat-group
+        src: "/opt/tomcat/calculator-app/target/calculator-1.0.0.war"
+        dest: "{{ tomcat_install_dir }}/webapps/calculator-1.0.0.war"
+        owner: your_username
+        group: your_group
         mode: '0644'
       notify:
         - Restart Tomcat
@@ -69,5 +69,5 @@
       shell: "{{ tomcat_install_dir }}/bin/shutdown.sh && sleep 5 && {{ tomcat_install_dir }}/bin/startup.sh"
       args:
         chdir: "{{ tomcat_install_dir }}/bin"
-      async: 0/path/to/your/
+      async: 0
       poll: 0

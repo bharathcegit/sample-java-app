@@ -3,4 +3,4 @@
 
 [tomcat]
 
-tomcat-server    ansible_host=34.226.245.7   ansible_port=22     ansible_user=ubuntu     ansible_ssh_private_key_file="/home/ubuntu/new_key.pem"
+tomcat-server    ansible_host=18.234.125.80   ansible_port=22     ansible_user=ubuntu     ansible_ssh_private_key_file="/home/ubuntu/new_key.pem"

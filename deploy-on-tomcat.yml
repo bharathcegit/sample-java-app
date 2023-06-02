@@ -68,13 +68,13 @@
         state: present
 
     - name: Build Java application with Maven
-      shell: mvn clean package -f /opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app/
+      shell: mvn clean package -f /opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app/pom.xml
       args:
         chdir: /opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app
 
     - name: Create Tomcat deployment directory
       file:
-        path: "{{ tomcat_install_dir }}/webapps/calculator-app"
+        path: "{{ tomcat_install_dir }}/webapps"
         state: directory
         owner: bharath
         group: tomcat-group

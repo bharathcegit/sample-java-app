@@ -6,14 +6,18 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git 'https://git.cloudavise.com/visops/t054/sample-java-app.git'
+        stage('checkout') 
+        {
+            steps 
+            {
+                git credentialsId: 'ca-git-access', branch: 'deploy-on-tomcat', url: "https://git.cloudavise.com/visops/t054/sample-java-app.git"
             }
         }
 
-        stage('Run Ansible') {
-            steps {
+        stage('Run Ansible') 
+        {
+            steps 
+            {
                 sh 'ansible-playbook -i inventory deploy-on-tomcat.yml'
             }
         }

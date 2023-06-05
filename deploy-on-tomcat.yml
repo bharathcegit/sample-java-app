@@ -5,7 +5,7 @@
   tasks:
     - name: 'Deploy Java Build in Tomcat server'
       copy:
-        dest: '/opt/tomcat10/webapps/webapp.war/'
+        dest: '/opt/tomcat10/webapps/webapp.war'
         src: '/opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app/target/calculator-1.0.0.war'
         mode: 0755
 

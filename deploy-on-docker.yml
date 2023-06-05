@@ -53,8 +53,8 @@
 
     - name: Copy WAR file
       copy:
-        src: '/opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/target/calculator-1.0.0.war'
-        dest: '/home/ubuntu'
+        src: /opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/target/calculator-1.0.0.war
+        dest: /home/ubuntu
 
     - name: Build Docker image
       command: docker build -t tomcat:v1 /home/ubuntu/.

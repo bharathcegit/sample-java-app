@@ -10,7 +10,7 @@ pipeline {
         {
             steps 
             {
-                git credentialsId: 'ca-git-access', branch: 'deploy-on-tomcat', url: "https://git.cloudavise.com/visops/t054/sample-java-app.git"
+                git credentialsId: 'ca-git-access', branch: 'development', url: "https://git.cloudavise.com/visops/t054/sample-java-app.git"
             }
         }
 

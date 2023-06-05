@@ -1,0 +1,62 @@
+---
+- hosts: tomcat
+  become: true
+
+  tasks:
+    - name: Update apt-get
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Upgrade all packages on servers
+      apt: 
+        upgrade=dist 
+        force_apt_get=yes
+
+    - name: ensure repository key is installed
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: ensure docker registry is available
+      apt_repository: repo='deb https://download.docker.com/linux/ubuntu bionic stable' 
+        state=present
+
+    - name: ensure docker and dependencies are installed
+      apt: 
+        name=docker-ce 
+        update_cache=yes
+
+    - name: Add Ubuntu user to Docker group
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes
+    
+    - service: 
+        name=docker 
+        state=restarted
+      
+
+---
+
+- name: Build Docker image and run container
+  hosts: tomcat
+  become: yes
+
+  tasks:
+    - name: Copy Dockerfile
+      copy:
+        src: Dockerfile
+        dest: /home/ubuntu
+
+    - name: Copy WAR file
+      copy:
+        src: '/opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/target/calculator-1.0.0.war'
+        dest: '/home/ubuntu'
+
+    - name: Build Docker image
+      command: docker build -t tomcat:v1 /home/ubuntu/.
+
+    - name: Run Docker container
+      command: docker run -it -d -p 8001:8080 tomcat:v1

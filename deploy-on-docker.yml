@@ -39,8 +39,6 @@
         name: docker 
         state: restarted
 
----
-
 - name: Build Docker image and run container
   hosts: tomcat
   become: yes

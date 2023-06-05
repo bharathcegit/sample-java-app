@@ -5,11 +5,22 @@
   tasks:
     - name: 'Deploy Java Build in Tomcat server'
       copy:
-        dest: '/opt/tomcat10/webapps/webapp.war'
+        dest: '/opt/tomcat/webapps/ROOT.war'
         src: '/opt/jenkins/workspace/VisOps/t054/sample-java-app/deploy-on-tomcat/calculator-app/target/calculator-1.0.0.war'
         mode: 0755
 
-    - name: 'Restart Tomcat server'
+    - name: Stop Tomcat service
       service:
-        name: 'tomcat'
-        state: restarted
+        name: tomcat
+        state: stopped
+
+    - name: Delete existing ROOT directory
+      file:
+        path: /opt/tomcat/webapps/ROOT
+        state: absent
+
+    - name: Start Tomcat service
+      service:
+        name: tomcat
+        state: started
+

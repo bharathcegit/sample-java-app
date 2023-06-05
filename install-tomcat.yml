@@ -6,6 +6,7 @@
   tasks:
     - name: Download Open JDK
       become: yes
+
       apt:
         name: default-jdk
         update_cache: yes
@@ -31,7 +32,9 @@
       file:
         path: /opt/tomcat
         state: directory
-        mode: 0755
+        mode: 
+
+
         owner: tomcat
         group: tomcat
 
@@ -54,8 +57,17 @@
       systemd:
         daemon_reload: yes
 
-    - name: Start Tomcat
-      become: yes
-      shell: ./startup.sh
-      args:
-        chdir: /opt/tomcat/bin
+    - name: Create Tomcat service file
+      template:
+        src: service/tomcat.service
+        dest: /etc/systemd/system/tomcat.service
+
+    - name: Reload systemd config
+      systemd:
+        daemon_reload: yes
+
+    - name: Enable and start Tomcat service
+      service:
+        name: tomcat
+        state: started
+        enabled: yes
